@@ -1,7 +1,8 @@
+
 package Vista;
 
-import Dao.EgresadoDAO;
-import Modelo.Egresado;
+import Dao.UsuarioDAO;
+import Modelo.Usuario;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -21,16 +22,17 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-public class BusquedaEgresadoForm extends javax.swing.JPanel {
 
-    private JTextField txtBuscar;
+public class BusquedaUsuarioForm extends javax.swing.JPanel {
+
+ private JTextField txtBuscar;
     private JButton btnBuscar, btnLimpiar;
     private JTable tablaResultados;
     private DefaultTableModel modeloTabla;
-    private EgresadoDAO egresadoDAO;
+    private UsuarioDAO usuarioDAO;
 
-    public BusquedaEgresadoForm() {
-        this.egresadoDAO = new EgresadoDAO();
+    public BusquedaUsuarioForm() {
+        this.usuarioDAO = new UsuarioDAO();
         initComponents2();
     }
 
@@ -56,7 +58,7 @@ public class BusquedaEgresadoForm extends javax.swing.JPanel {
 
         txtBuscar = new JTextField();
         txtBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        txtBuscar.setBorder(BorderFactory.createTitledBorder("🔍 Buscar egresado por nombre o DNI"));
+        txtBuscar.setBorder(BorderFactory.createTitledBorder("🔍 Buscar usuario por nombre o username"));
 
         btnBuscar = crearBotonAzul("🔍 Buscar");
         btnLimpiar = crearBotonRojo("🧹 Limpiar");
@@ -72,7 +74,7 @@ public class BusquedaEgresadoForm extends javax.swing.JPanel {
 
         // 📋 Tabla de resultados
         modeloTabla = new DefaultTableModel(
-                new String[]{"ID", "Nombres", "Apellidos", "DNI", "Correo", "Teléfono", "Carrera"}, 0
+                new String[]{"ID", "Username", "Rol"}, 0
         );
         tablaResultados = new JTable(modeloTabla);
         tablaResultados.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -85,12 +87,12 @@ public class BusquedaEgresadoForm extends javax.swing.JPanel {
         scrollTabla.getViewport().setOpaque(false);
 
         // 🎯 Eventos
-        btnBuscar.addActionListener(e -> buscarEgresados());
+        btnBuscar.addActionListener(e -> buscarUsuarios());
         btnLimpiar.addActionListener(e -> limpiarBusqueda());
         txtBuscar.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                buscarEgresados(); // 🔥 Búsqueda en tiempo real
+                buscarUsuarios(); // 🔥 Búsqueda en tiempo real
             }
         });
 
@@ -101,20 +103,16 @@ public class BusquedaEgresadoForm extends javax.swing.JPanel {
         this.add(panelFondo, BorderLayout.CENTER);
     }
 
-    private void buscarEgresados() {
+    private void buscarUsuarios() {
         String criterio = txtBuscar.getText().trim();
         modeloTabla.setRowCount(0); // Limpiar tabla
 
-        List<Egresado> resultados = egresadoDAO.buscarEgresadosPorNombreODni(criterio);
-        for (Egresado e : resultados) {
+        List<Usuario> resultados = usuarioDAO.buscarUsuariosPorNombreOUsername(criterio);
+        for (Usuario u : resultados) {
             modeloTabla.addRow(new Object[]{
-                e.getId(),
-                e.getNombres(),
-                e.getApellidos(),
-                e.getDni(),
-                e.getCorreo(),
-                e.getTelefono(),
-                e.getCarrera().getNombre()
+                u.getId(),
+                u.getNombreUsuario(),
+                u.getRol()
             });
         }
     }
@@ -166,6 +164,7 @@ public class BusquedaEgresadoForm extends javax.swing.JPanel {
         return boton;
     }
 
+ 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
